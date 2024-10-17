@@ -6,9 +6,9 @@ class User(db.Model):
     __tablename__ = 'users'
     __table_args__ = {'schema': 'ejercicios'}
     
-    user = db.Column(db.String(20), primary_key=True)
-    password = db.Column(db.String(128), nullable=False)
     id_person = db.Column(db.String(50), db.Foreingnkey('persons.id'), nullable=False)
+    user = db.Column(db.String(20), primary_key=True)
+    password = db.Column(db.String(128), nullable=False)    
 
     #columnas de auditoria.
     usr_create =  db.Column(db.String(20), nullable=False)
