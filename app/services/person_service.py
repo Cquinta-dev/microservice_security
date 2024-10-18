@@ -12,6 +12,7 @@ class PersonService:
             name = data['nombres'],
             lastname = data['apellidos'],
             email = data['correo'],
+            status_per = 'E',
             usr_create = data['uCreacion'],
             tim_create = datetime.now()
         )
@@ -25,16 +26,20 @@ class PersonService:
     def get_all_persons(self):
 
         getPersons = Person.query.all()
-        data = {
-            'personas': [
-                {
-                    'id': p.id_person,
-                    'nombres': p.name,
-                    'apellidos': p.lastname,
-                    'correo': p.email
-                } for p in getPersons
-            ]
-        }
+        if getPersons:
+            data = {
+                'personas': [
+                    {
+                        'id': p.id_person,
+                        'nombres': p.name,
+                        'apellidos': p.lastname,
+                        'correo': p.email,
+                        'estado': p.status_per
+                    } for p in getPersons
+                ]
+            }
+        else:
+            return None
 
         return data
     
@@ -48,6 +53,7 @@ class PersonService:
                 'nombres': getPerson.name,
                 'apellidos': getPerson.lastname,
                 'correo': getPerson.email,
+                'estado': getPerson.status_per
             }
         else:
             return None
@@ -67,6 +73,9 @@ class PersonService:
             
             if data['correo']:
                 person.email = data['correo']
+
+            if data['estado']:
+                person.status_per = data['estado']
 
             person.usr_update = data['uActualiza']
             person.tim_update = datetime.now()            
