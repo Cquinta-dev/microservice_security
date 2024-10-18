@@ -11,7 +11,7 @@ class Person(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
 
     #columnas de auditoria.
-    status_per = db.Column(db.String(1))
+    status_per = db.Column(db.String(1), nullable=False)
     usr_create = db.Column(db.String(20), nullable=False)
     tim_create = db.Column(db.DateTime, nullable=False)  
     usr_update = db.Column(db.String(20))

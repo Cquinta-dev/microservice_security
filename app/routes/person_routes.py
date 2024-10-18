@@ -1,3 +1,4 @@
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import Blueprint, jsonify, request
 from app.services import service_manager
 from ..schemas.person_schema import expected_fields_create
@@ -7,10 +8,11 @@ person_routes = Blueprint('person', __name__)
 
 #Method for create person.
 @person_routes.route('/createPerson',methods=['POST'])
+@jwt_required()
 def create_person():
-    try:
-        data = request.get_json(force=True)
 
+    try:        
+        data = request.get_json(force=True)
         if data is None:
             return jsonify({'error': 'No JSON data provided'}), 400
         
@@ -18,64 +20,65 @@ def create_person():
         if missing_fields:
             return jsonify({'error': 'Missing fields', 'missing': list(missing_fields)}), 400
         
-        service_manager.person_service.create_person(data)
+        personCreate = service_manager.person_service.create_person(data, get_jwt_identity())
+        if personCreate is None:
+            return jsonify({'error': 'Internal Server'}), 500   
         
         return jsonify({'message': 'Person created'}), 201
     
     except Exception as e:
-
+        print(e)
         return jsonify({'error': 'Internal Server'}), 500    
 
 
 #Method for get list to person.
 @person_routes.route('/allPersons', methods=['GET'])
+@jwt_required()
 def get_persons():
 
-    persons = service_manager.person_service.get_all_persons()
-    if persons is None:
+    personsGetAll = service_manager.person_service.get_all_persons()
+    if personsGetAll is None:
         return jsonify({'error':'Not list data found'}), 404
 
-    return jsonify(persons), 200
+    return jsonify(personsGetAll), 200
 
 
 #Method for get one person.
 @person_routes.route('/getPerson', methods=['GET'])
+@jwt_required()
 def get_person():
-    personID = request.args.get('id')
 
+    personID = request.args.get('id')
     if personID: 
-        person = service_manager.person_service.get_person(personID)
-        if person is None:
+        personGet = service_manager.person_service.get_person(personID)
+        if personGet is None:
             return jsonify({'error':'Person not found'}), 404
         
-        return jsonify(person), 200
+        return jsonify(personGet), 200
 
     return jsonify({'error': 'Id was not provided'}), 400
 
 
 #Method for udpate person.
 @person_routes.route('/updatePerson', methods=['PUT'])
+@jwt_required()
 def update_person():    
-    try:
-        personID = request.args.get('id')
+
+    try:        
         data = request.get_json(force=True)
-
-        if personID: 
-            if data is None:
-                return jsonify({'error': 'No JSON data provided'}), 400
+        if data is None:
+            return jsonify({'error': 'No JSON data provided'}), 400
             
-            missing_fields = expected_fields_update - data.keys()
-            if missing_fields:
-                return jsonify({'error': 'Missing fields', 'missing': list(missing_fields)}), 400
+        missing_fields = expected_fields_update - data.keys()
+        if missing_fields:
+            return jsonify({'error': 'Missing fields', 'missing': list(missing_fields)}), 400
 
-            updatePerson = service_manager.person_service.update_person(personID, data)
-            if updatePerson is None:
-                return jsonify({'error':'Person not found'}), 404
+        personUpdate = service_manager.person_service.update_person(data, get_jwt_identity())
+        if personUpdate is None:
+            return jsonify({'error':'Person not found'}), 404
             
-            return jsonify({'message': 'Person updated'}), 201
-
-        return jsonify({'error': 'Id was not provided'}), 400
+        return jsonify({'message': 'Person updated'}), 201
 
     except Exception as e:
-
-            return jsonify({'error': 'Internal Server'}), 500    
+        print(e)
+        return jsonify({'error': 'Internal Server'}), 500    

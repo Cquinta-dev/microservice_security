@@ -1,6 +1,15 @@
 expected_fields_create = {
     "personId",
     "usuario",
-    "contrasenia",
-    "uCreacion"
+    "contrasenia"
+}
+
+expected_fields_update = {    
+    "usuario",
+    "estado"
+}
+
+expected_fields_login = {    
+    "usuario",
+    "contrasenia"
 }

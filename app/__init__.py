@@ -1,3 +1,4 @@
+from flask_jwt_extended import JWTManager
 from flask import Flask
 from .config import Config
 from .database import db
@@ -8,6 +9,7 @@ def create_app():
     app = Flask(__name__)
     app.register_blueprint(main_routes)
     app.config.from_object(Config)
+    JWTManager(app)
 
     db.init_app(app)
     with app.app_context():

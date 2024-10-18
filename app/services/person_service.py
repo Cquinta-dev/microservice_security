@@ -5,7 +5,7 @@ from datetime import datetime
 class PersonService:
 
 
-    def create_person(self, data):
+    def create_person(self, data, usr):
 
         new_person = Person (
             id_person = data['id'], 
@@ -13,7 +13,7 @@ class PersonService:
             lastname = data['apellidos'],
             email = data['correo'],
             status_per = 'E',
-            usr_create = data['uCreacion'],
+            usr_create = usr,
             tim_create = datetime.now()
         )
         
@@ -61,9 +61,9 @@ class PersonService:
         return data
         
 
-    def update_person(self, id, data):
+    def update_person(self, data, usr):
         
-        person = Person.query.filter_by(id_person=id).first()
+        person = Person.query.filter_by(id_person=data['id']).first()
         if person:            
             if data['nombres']: 
                 person.name = data['nombres']
@@ -77,7 +77,7 @@ class PersonService:
             if data['estado']:
                 person.status_per = data['estado']
 
-            person.usr_update = data['uActualiza']
+            person.usr_update = usr
             person.tim_update = datetime.now()            
             db.session.commit()
 
