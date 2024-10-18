@@ -41,20 +41,19 @@ class PersonService:
 
     def get_person(self, id):
 
-        getPerson = Person.query.filter_by(id_person=id)
-        data = {
-            'personas': [
-                {
-                    'id': p.id_person,
-                    'nombres': p.name,
-                    'apellidos': p.lastname,
-                    'correo': p.email
-                } for p in getPerson
-            ]
-        }
+        getPerson = Person.query.filter_by(id_person=id).first()
+        if getPerson:
+            data = {
+                'id': getPerson.id_person,
+                'nombres': getPerson.name,
+                'apellidos': getPerson.lastname,
+                'correo': getPerson.email,
+            }
+        else:
+            return None
 
         return data
-
+        
 
     def update_person(self, id, data):
         

@@ -33,7 +33,7 @@ def get_persons():
 
     persons = service_manager.person_service.get_all_persons()
     if persons is None:
-        return jsonify({'error':'Not data found'}), 404
+        return jsonify({'error':'Not list data found'}), 404
 
     return jsonify(persons), 200
 
@@ -45,10 +45,10 @@ def get_person():
 
     if personID: 
         person = service_manager.person_service.get_person(personID)
-        if person:
-            return jsonify(person), 200
+        if person is None:
+            return jsonify({'error':'Person not found'}), 404
         
-        return jsonify({'error':'Not data found'}), 404
+        return jsonify(person), 200
 
     return jsonify({'error': 'Id was not provided'}), 400
 
@@ -70,7 +70,7 @@ def update_person():
 
             updatePerson = service_manager.person_service.update_person(personID, data)
             if updatePerson is None:
-                return jsonify({'error':'Not data found'}), 404
+                return jsonify({'error':'Person not found'}), 404
             
             return jsonify({'message': 'Person updated'}), 201
 
