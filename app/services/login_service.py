@@ -19,30 +19,40 @@ class LoginService:
             password_is_correct = bcrypt.checkpw(data['contrasenia'].encode('utf-8'), hashed_password_bytes)
 
             if password_is_correct:  
+                if user.status_usr == 'E':
+                    access_token = create_access_token(identity=user.user)
+                    access_expiration = datetime.now() + Config.JWT_ACCESS_TOKEN_EXPIRES
+                    if user.tocken_refresh is None:
+                        refresh_token = create_refresh_token(identity=user.user)
+                        user.tocken = refresh_token
+                        refresh_expiration = datetime.now() + Config.JWT_REFRESH_TOKEN_EXPIRES
+                        user.tocken_refresh = refresh_expiration
+                    else:                        
+                        if user.tocken_refresh > datetime.now():
+                            refresh_token = user.tocken
+                        else:
+                            refresh_token = create_refresh_token(identity=user.user)
+                            user.tocken = refresh_token
+                            refresh_expiration = datetime.now() + Config.JWT_REFRESH_TOKEN_EXPIRES
+                            user.tocken_refresh = refresh_expiration
 
-                access_token = create_access_token(identity=user.user)
-                access_expiration = datetime.now() + Config.JWT_ACCESS_TOKEN_EXPIRES
-                refresh_token = create_refresh_token(identity=user.user)            
-                refresh_expiration = datetime.now() + Config.JWT_REFRESH_TOKEN_EXPIRES
+                    accessSusses = {
+                        'access_token': access_token,
+                        'access_expiration': access_expiration,
+                        'refresh_token': refresh_token
+                    }
 
-                accessSusses = {
-                    'access_token': access_token,
-                    'access_expiration': access_expiration,
-                    'refresh_token': refresh_token
-                }
+                    user.status_session = 'A'                    
+                    user.open_session = datetime.now()
+                    db.session.commit()
 
-                user.status_session = 'A'
-                user.tocken_refresh = refresh_expiration
-                user.open_session = datetime.now()
-                db.session.commit()
-
-                return accessSusses
-            
+                    return accessSusses
+                
+                else:
+                    return 402   
             else:
                 return 401
-        
         else:
-    
             return None
         
 
@@ -62,10 +72,8 @@ class LoginService:
                 return newAccess
             
             else :
-
                 return {'Error':'La sessión fue finalizada.'}
         else:
-
             return None    
     
     
@@ -75,16 +83,13 @@ class LoginService:
         if user:
             if user.status_session == 'I' :
                 return {'Exitoso':'la sesión ya finalizada.'}
-
             else:    
                 user.status_session = 'I'        
                 user.close_session = datetime.now()
                 db.session.commit()
 
                 return {'Exitoso':'Sesión Finalizada.'}
-            
         else :
-
             return 404
 
 
@@ -100,8 +105,6 @@ class LoginService:
                 db.session.commit()
 
             return user
-
         else:
-
             return None
         

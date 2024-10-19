@@ -12,6 +12,7 @@ class User(db.Model):
     open_session = db.Column(db.DateTime)
     close_session = db.Column(db.DateTime)
     tocken_refresh = db.Column(db.DateTime)
+    tocken = db.Column(db.String(500))
     
     #columnas de auditoria.
     status_usr = db.Column(db.String(1), nullable=False)
