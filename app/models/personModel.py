@@ -3,7 +3,7 @@ from ..database import db
 class Person(db.Model):
 
     __tablename__ = 'persons'  # Nombre de la tabla
-    __table_args__ = {'schema': 'ejercicios'}  # Especifica el esquema
+    __table_args__ = {'schema': 'ap_general'}  # Especifica el esquema
 
     id_person = db.Column(db.String(50), primary_key=True)    
     name = db.Column(db.String(150), nullable=False)

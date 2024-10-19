@@ -72,7 +72,7 @@ class LoginService:
                 return newAccess
             
             else :
-                return {'Error':'La sessión fue finalizada.'}
+                return {'Error':'La sesión ya fue finalizada.'}
         else:
             return None    
     
@@ -82,7 +82,7 @@ class LoginService:
         user = User.query.filter_by(user=usr).first()
         if user:
             if user.status_session == 'I' :
-                return {'Exitoso':'la sesión ya finalizada.'}
+                return {'Error':'La sesión ya fue finalizada.'}
             else:    
                 user.status_session = 'I'        
                 user.close_session = datetime.now()

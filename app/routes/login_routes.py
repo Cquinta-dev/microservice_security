@@ -57,7 +57,6 @@ def logout():
     saveLogout = service_manager.login_service.logout(current_user)
     if saveLogout:
         return jsonify(saveLogout), 200
-    
 
     return jsonify({'error': 'Internal Server'}), 500
 
