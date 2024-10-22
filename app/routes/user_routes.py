@@ -8,7 +8,7 @@ user_routes = Blueprint('user', __name__)
 
 #Method for create users.
 @user_routes.route('/createUser', methods=['POST'])
-@jwt_required()
+#@jwt_required()
 def create_user():
     
     try:
@@ -20,11 +20,11 @@ def create_user():
         if missing_fields:
             return jsonify({'error': 'Missing fields', 'missing': list(missing_fields)}), 400
         
-        usr = service_manager.user_service.create_user(data, get_jwt_identity())
+        usr = service_manager.user_service.create_user(data, 'root')#get_jwt_identity())
         if usr is None:
             return jsonify({'error':'Person not found'}), 404
         
-        return jsonify({'message': 'user created'}), 201
+        return jsonify({'message': 'User created'}), 201
     
     except Exception as e:
         print(e)
