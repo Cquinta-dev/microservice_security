@@ -1,5 +1,5 @@
 from flask_jwt_extended import create_access_token, create_refresh_token
-from app.models.userModel import User
+from app.models.user_model import User
 from datetime import datetime
 from ..config import Config
 from app.database import db

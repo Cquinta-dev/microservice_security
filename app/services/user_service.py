@@ -1,5 +1,5 @@
-from app.models.userModel import User
-from app.models.personModel import Person
+from app.models.user_model import User
+from app.models.person_model import Person
 from app.database import db
 from datetime import datetime
 import bcrypt
