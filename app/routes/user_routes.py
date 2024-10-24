@@ -1,6 +1,6 @@
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import Blueprint, jsonify, request
-from app.services import service_manager
+from ..services import service_manager
 from ..schemas.user_schema import expected_fields_create
 from ..schemas.user_schema import expected_fields_update
 

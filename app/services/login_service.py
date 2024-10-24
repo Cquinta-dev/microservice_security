@@ -1,8 +1,8 @@
 from flask_jwt_extended import create_access_token, create_refresh_token
-from app.models.user_model import User
-from datetime import datetime
+from ..models.users_model import Users
 from ..config import Config
-from app.database import db
+from ..database import db
+from datetime import datetime
 import bcrypt
 import base64
 
@@ -10,7 +10,7 @@ class LoginService:
 
     def validate_login(self, data):
 
-        user = User.query.filter_by(user=data['usuario']).first()
+        user = Users.query.filter_by(idUser=data['usuario']).first()
         if user:
             if user.password is None or not isinstance(user.password, str):
                 return 500
@@ -20,10 +20,10 @@ class LoginService:
 
             if password_is_correct:  
                 if user.status_usr == 'E':
-                    access_token = create_access_token(identity=user.user)
+                    access_token = create_access_token(identity=user.idUser)
                     access_expiration = datetime.now() + Config.JWT_ACCESS_TOKEN_EXPIRES
                     if user.tocken_refresh is None:
-                        refresh_token = create_refresh_token(identity=user.user)
+                        refresh_token = create_refresh_token(identity=user.idUser)
                         user.tocken = refresh_token
                         refresh_expiration = datetime.now() + Config.JWT_REFRESH_TOKEN_EXPIRES
                         user.tocken_refresh = refresh_expiration
@@ -31,7 +31,7 @@ class LoginService:
                         if user.tocken_refresh > datetime.now():
                             refresh_token = user.tocken
                         else:
-                            refresh_token = create_refresh_token(identity=user.user)
+                            refresh_token = create_refresh_token(identity=user.idUser)
                             user.tocken = refresh_token
                             refresh_expiration = datetime.now() + Config.JWT_REFRESH_TOKEN_EXPIRES
                             user.tocken_refresh = refresh_expiration
@@ -58,7 +58,7 @@ class LoginService:
 
     def refresh_token(self, usr):
 
-        user = User.query.filter_by(user=usr).first()
+        user = Users.query.filter_by(idUser=usr).first()
         if user:
             if user.status_session == 'A':
                 access_token = create_access_token(identity=usr)
@@ -79,7 +79,7 @@ class LoginService:
     
     def logout(self, usr):
 
-        user = User.query.filter_by(user=usr).first()
+        user = Users.query.filter_by(idUser=usr).first()
         if user:
             if user.status_session == 'I' :
                 return {'Error':'La sesión ya fue finalizada.'}
@@ -95,7 +95,7 @@ class LoginService:
 
     def reset_password(self, data):
 
-        user = User.query.filter_by(user=data['usuario']).first()
+        user = Users.query.filter_by(idUser=data['usuario']).first()
         if user:
             if data['contrasenia']:
                 password_hash = bcrypt.hashpw(data['contrasenia'].encode('utf-8'), bcrypt.gensalt())

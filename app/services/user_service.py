@@ -1,6 +1,6 @@
-from app.models.user_model import User
-from app.models.person_model import Person
-from app.database import db
+#from ..models.person_model import Person
+from ..models.users_model import Users
+from ..database import db
 from datetime import datetime
 import bcrypt
 import base64
@@ -9,14 +9,14 @@ class UserService:
 
     def create_user(self, data, usr):
 
-        getPerson = Person.query.filter_by(id_person=data['personId']).first()
-        if getPerson:
-            if getPerson.status_per == 'E':
+        #getPerson = Person.query.filter_by(id_person=data['personId']).first()
+        #if getPerson:
+            #if getPerson.status_per == 'E':
                 password_hash = bcrypt.hashpw(data['contrasenia'].encode('utf-8'), bcrypt.gensalt())
                 hashed_password_base64 = base64.b64encode(password_hash).decode('utf-8')
-                new_user = User(
+                new_user = Users(
                     id_person = data['personId'],
-                    user = data['usuario'],
+                    idUser = data['usuario'],
                     password = hashed_password_base64,
                     status_session = 'I',
                     status_usr = 'E',
@@ -28,15 +28,15 @@ class UserService:
                 db.session.commit()
                 
                 return new_user
-            else:
-                return {'message': 'Person status inactive'}
-        else:
-            return None
+            #else:
+            #    return {'message': 'Person status inactive'}
+        #else:
+        #    return None
         
 
     def get_user(self, id):
 
-        user = User.query.filter_by(user=id).first()
+        user = Users.query.filter_by(idUser=id).first()
         if user:
             data = {
                 'personId': user.id_person,
@@ -51,7 +51,7 @@ class UserService:
         
     def update_user(self, data, usr):
 
-        user = User.query.filter_by(user=data['usuario']).first()
+        user = Users.query.filter_by(idUser=data['usuario']).first()
         if user:        
             if data['estado']:
                 user.status_usr = data['estado']

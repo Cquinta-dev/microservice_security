@@ -1,13 +1,13 @@
 from ..database import db
 
-class RoleUser(db.Model):
+class MenuModules(db.Model):
 
-    __tablename__ = 'roleuser'
+    __tablename__ = 'menumodules'
     __table_args__ = {'schema': 'ap_security'}
 
-    idRoleUser = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    idRole = db.Column(db.Integer, db.ForeignKey('ap_security.roles.idRole'), nullable=False)
-    idUser = db.Column(db.Integer, db.ForeignKey('ap_security.users.idUser'), nullable=False)
+    idMenuModule = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    idMenu = db.Column(db.Integer, db.ForeignKey('ap_security.menu.idMenu'), nullable=False)
+    nameModule = db.Column(db.String(100), nullable=False, unique=True)
 
     #columnas de auditoria.
     status = db.Column(db.String(1), nullable=False)
